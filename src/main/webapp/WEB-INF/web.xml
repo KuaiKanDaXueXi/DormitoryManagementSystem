@@ -1,0 +1,11 @@
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+  <init-param>
+    <!--
+     init-param元素定义了过滤器的初始化参数
+     -->
+    <description>给参数和值设置名称和编码类型</description>
+    <param-name>encode</param-name>
+    <param-value>utf-8</param-value>
+  </init-param>
+</web-app>

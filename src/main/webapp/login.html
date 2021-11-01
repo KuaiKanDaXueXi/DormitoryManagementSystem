@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>SCT-后台系统</title>
+	<style>
+		#ckcode{
+			width: 100px;
+		}
+		#ckimg{
+			height: 40px;
+			width: 100px;
+			vertical-align: middle;
+		}
+	</style>
+<link href="style/authority/login_css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="style/elementUI/index.css">
+<script type="text/javascript" src="scripts/jquery/jquery-1.7.1.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#login_sub").click(function(){
+			$("#submitForm").attr("action", "index.html").submit();
+		});
+	});
+	function refreshCode() {
+		$("#ckimg").attr("src","userServlet?mark=checkcode&r"+Math.random());
+	}
+	// $("#login_sub").click(function () {
+	// 	$.post(
+	// 			"userServlet?mark=logincheck",
+	// 			{
+	// 				"userEntity.username":$("#userEntity.username").value(),
+	// 				"userEntity.password":$("#userEntity.password").value(),
+	// 				"userEntity.checkcode":$("#userEntity.checkcode").value()
+	// 			},function (data) {
+	// 				if (data.success()){
+	// 					$("#submitForm").submit();
+	// 				}else {
+	//
+	// 				}
+	// 			}
+	//
+	// 	)
+	// })
+</script>
+</head>
+<body>
+	<div id="login_center">
+		<div id="login_area">
+			<div id="login_box">
+				<div id="login_form">
+					<div id="msgBox">
+						<form id="submitForm">
+							<div id="login_tip">
+								<input hidden name="mark" value="${loginCheck}">
+							</div>
+							<div>
+								  用户名：<input type="text" name="userEntity.username" ref="username" class="username" id="name">
+							</div>
+							<div>
+								密&nbsp;&nbsp;&nbsp;&nbsp;码：<input type="password" name="userEntity.password" ref="password" class="pwd" id="pwd">
+							</div>
+							<div>
+								验证码：<input type="text" name="userEntity.checkcode" ref="ckcode" class="ckcode" id="ckcode">
+								<img id="ckimg" src="userServlet?mark=checkcode" onclick="refreshCode()">
+							</div>
+							<div id="btn_area">
+								<input type="button" class="login_btn" id="login_sub" @click="submitFrom()" value="登  录">
+								<input type="reset" class="login_btn" id="login_ret" value="重 置">
+							</div>
+						</form>
+						<div hidden>
+							<el-button :plain="true" @click="open2">{{msg}}</el-button>
+							<el-button :plain="true" @click="open4">{{msg}}</el-button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script src="scripts/vue/vue.js"></script>
+<script src="scripts/elementUI/index.js"></script>
+<script src="scripts/axios/axios.min.js"></script>
+<script>
+	new Vue({
+		el:"#msgBox",
+		data:{
+			msg:''
+		},
+		methods:{
+			open2(msg){
+				this.$message({
+					message: msg,
+					type: 'success'
+				});
+			},
+			open4(msg) {
+				this.$message.error(msg);
+			},
+			submitFrom() {
+				axios.post('/userServlet?mark=logincheck',{
+					"userEntity.username":this.$refs.username.value,
+					"userEntity.password":this.$refs.password.value,
+					"userEntity.checkcode":this.$refs.ckcode.value
+				})
+				.then(response=>{
+					this.msg = response.data.message;
+					if (response.data.success){
+						this.open2(this.msg);
+						setTimeout(()=>{
+							window.location.href="login.html"
+						},3)
+					}else {
+						this.open4(this.msg);
+					}
+				})
+			}
+		}
+
+	})
+</script>
+</body>
+</html>
